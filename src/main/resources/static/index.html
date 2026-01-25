@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Sender</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            width: 400px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        #msg {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Send Email</h2>
+
+    <div class="form-group">
+        <label>Enter Email</label>
+        <input type="email" id="email" placeholder="example@gmail.com">
+    </div>
+
+    <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="subject" placeholder="Enter subject">
+    </div>
+
+    <div class="form-group">
+        <label>Message</label>
+        <textarea id="message" placeholder="Enter your message"></textarea>
+    </div>
+
+    <button onclick="sendMail()">Send Email</button>
+
+    <div id="msg"></div>
+</div>
+
+<script>
+    function sendMail() {
+        let email = document.getElementById("email").value;
+        let subject = document.getElementById("subject").value;
+        let message = document.getElementById("message").value;
+
+        fetch("http://localhost:8080/send-mail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                to: email,
+                subject: subject,
+                text: message
+            })
+        })
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("msg").innerText = data;
+        })
+        .catch(err => {
+            document.getElementById("msg").innerText = "Error sending email";
+        });
+    }
+</script>
+
+</body>
+</html>
